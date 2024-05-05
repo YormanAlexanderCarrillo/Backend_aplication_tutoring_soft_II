@@ -3,6 +3,12 @@
 ```bash
 $ git clone https://github.com/YormanAlexanderCarrillo/Backend_aplication_tutoring_soft_II.git
 ```
+
+## Ingresar carpeta
+```bash
+cd Backend_aplication_tutoring_soft_II
+```
+
 ## Instalar modulos
 
 ```bash
