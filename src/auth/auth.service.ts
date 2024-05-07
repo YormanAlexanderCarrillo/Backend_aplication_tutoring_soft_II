@@ -1,13 +1,18 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { AppFirebase } from 'src/firebase/firebase_config';
 import { UserService } from 'src/user/user.service';
 import { RegisterUserDto } from './Dtos/Register_User.dto';
+import { LoginUserDto } from 'src/user/Dtos/Login_user.dto';
 const auth = getAuth(AppFirebase);
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+    private readonly jwtService: JwtService
+  ) { }
+
 
   async registerUser(user: RegisterUserDto) {
     try {
@@ -38,4 +43,42 @@ export class AuthService {
       return error;
     }
   }
+
+  async login(dataLogin: LoginUserDto): Promise<Object> {
+    try {
+      const userFirebase = await signInWithEmailAndPassword(
+        auth,
+        dataLogin.email,
+        dataLogin.password,
+      );
+      console.log(userFirebase);
+
+      const userDB = await this.userService.findUserByUid(
+        userFirebase.user.uid,
+      );
+      if (!userDB) {
+        throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+      }
+
+      const payload = {
+        uid: userDB.uid,
+        email: userDB.email,
+        role: userDB.role,
+      };
+      const token = await this.jwtService.signAsync(payload);
+
+      return {
+        userData: userDB,
+        token: token,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
 }
+
+
+
+
