@@ -1,6 +1,7 @@
-import { RouterModule } from '@nestjs/core';
+import { Schema as mongooseSchema } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Role } from 'src/common/Enums/enum.role';
+import { Subject } from 'src/subject/Schema/subject.schema';
 
 @Schema()
 export class User {
@@ -14,6 +15,8 @@ export class User {
   uid: string;
   @Prop({ enum: Role, default: Role.STUDENT })
   role: Role;
+  @Prop([{ type: mongooseSchema.Types.ObjectId, ref: 'Subject' }])
+  subject: Subject[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

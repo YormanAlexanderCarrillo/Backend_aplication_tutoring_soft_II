@@ -19,4 +19,9 @@ export class AuthController {
     return await this.authService.login(dataLogin);
   }
 
+  @Post('register-tutor')
+  async registerTutor(@Body() dataTutor: RegisterUserDto){
+    return await this.authService.registerTutor(dataTutor)
+  }
+
 }
