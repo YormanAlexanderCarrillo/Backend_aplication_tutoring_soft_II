@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateTutoringDto{
     @IsNotEmpty()
@@ -15,5 +15,9 @@ export class CreateTutoringDto{
     @IsNotEmpty()
     @IsString()
     hour: string
+
+    @IsNotEmpty()
+    @IsBoolean()
+    status: boolean
 }
 

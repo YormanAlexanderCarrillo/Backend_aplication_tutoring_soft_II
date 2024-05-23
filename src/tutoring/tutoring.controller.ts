@@ -1,8 +1,7 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { TutoringService } from './tutoring.service';
 import { CreateTutoringDto } from './dtos/tutoring.dto';
 import { ApiTags } from '@nestjs/swagger';
-
 
 @ApiTags('Tutorings')
 @Controller('tutoring')
@@ -22,5 +21,10 @@ export class TutoringController {
       idStudent,
       tutoring,
     );
+  }
+
+  @Get('/get-all-tutoring-by-student/:idStudent')
+  async getAllTutoring(@Param('idStudent') idStudent: string) {
+    return await this.tutoringService.getAllTutoringByStudent(idStudent);
   }
 }

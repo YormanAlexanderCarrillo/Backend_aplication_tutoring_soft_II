@@ -21,37 +21,39 @@ export class TutoringService {
     tutoring: CreateTutoringDto,
   ) {
     try {
-        const subject = await this.subjectService.findSubjectById(idSuject)
-        const tutor =  await this.userService.findUserById(idTutor);
-        const student = await this.userService.findUserById(idStudent);
-        const tutorin = new this.tutoringModel(tutoring)
+      const subject = await this.subjectService.findSubjectById(idSuject);
+      const tutor = await this.userService.findUserById(idTutor);
+      const student = await this.userService.findUserById(idStudent);
+      const tutorin = new this.tutoringModel(tutoring);
 
-        tutorin.subject = subject
-        tutorin.tutor = tutor
-        tutorin.student = student
+      tutorin.subject = subject;
+      tutorin.tutor = tutor;
+      tutorin.student = student;
 
-        const tutoringSave = await tutorin.save()
+      const tutoringSave = await tutorin.save();
 
-        return{
-            message : "Tutoria creada",
-            data: tutoringSave,
-            status: HttpStatus.OK
-        }
+      return {
+        message: 'Tutoria creada',
+        data: tutoringSave,
+        status: HttpStatus.OK,
+      };
     } catch (error) {
-        throw new HttpException(error, HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async getAllTutoringByStudent(_id: string){
+  async getAllTutoringByStudent(_id: string) {
     try {
-        const tutorings = await this.tutoringModel.findOne({student:_id})
-        return{
-            message: "Tutorias Recuperadas",
-            data : tutorings,
-            status: HttpStatus.OK
-        }
+      // const tutoring1 = await this.tutoringModel.find()
+      const tutorings = await this.tutoringModel.find({ student: _id });
+
+      return {
+        message: 'Tutorias Recuperadas',
+        data: tutorings,
+        status: HttpStatus.OK,
+      };
     } catch (error) {
-        throw new HttpException(error, HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 }
