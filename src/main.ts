@@ -12,6 +12,7 @@ async function bootstrap() {
     .setTitle('Gestion tutorias')
     .setDescription('Documentacion api gestion de tutorias')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, configDocs);
   SwaggerModule.setup('/docs', app, document);
