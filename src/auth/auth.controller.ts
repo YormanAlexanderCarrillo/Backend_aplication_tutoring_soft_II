@@ -1,8 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './Dtos/Register_User.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { LoginUserDto } from 'src/user/Dtos/Login_user.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/Enums/enum.role';
+import { AuthGuard } from './guard/auth.guard';
+import { RolesGuard } from './guard/roles.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -19,6 +23,8 @@ export class AuthController {
     return await this.authService.login(dataLogin);
   }
 
+  @Roles(Role.ADMINISTRATOR)
+  @UseGuards(AuthGuard, RolesGuard)
   @Post('register-tutor')
   async registerTutor(@Body() dataTutor: RegisterUserDto){
     return await this.authService.registerTutor(dataTutor)
