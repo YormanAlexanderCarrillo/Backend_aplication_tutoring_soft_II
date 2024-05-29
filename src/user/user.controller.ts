@@ -21,7 +21,7 @@ export class UserController {
 
   @Roles(Role.ADMINISTRATOR)
   @UseGuards(AuthGuard, RolesGuard)
-  @Post('/add-subject-to-tutor:id_tutor/:id_subject')
+  @Post('/add-subject-to-tutor/:id_tutor/:id_subject')
   async addSubjectToTutor(
     @Param('id_tutor') id_tutor: string,
     @Param('id_subject') id_subject: string,
