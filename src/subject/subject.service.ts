@@ -44,4 +44,25 @@ export class SubjectService {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
   }
+
+  async deleteSubject(id: string){
+    try {
+      const subject = await this.subjectModel.findByIdAndDelete(id);
+      if (subject) {
+        return {
+          message: 'Materia eliminada',
+          status: HttpStatus.OK
+        }
+      }
+      else {
+        return {
+          message: 'Materia no encontrada',
+          status: HttpStatus.NOT_FOUND
+        }
+      }
+     
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
 }
