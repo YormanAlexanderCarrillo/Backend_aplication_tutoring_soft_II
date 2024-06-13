@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Subject } from './Schema/subject.schema';
 import { Model } from 'mongoose';
 import { CreateSubjectDto } from './dtos/create_subject.dto';
+import { async } from 'rxjs';
 
 @Injectable()
 export class SubjectService {
@@ -61,6 +62,19 @@ export class SubjectService {
         }
       }
      
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async updateSubject(id: string, subject: CreateSubjectDto){
+    try {
+      const updatedSubject = await this.subjectModel.findByIdAndUpdate(id, subject);
+      return {
+        message: 'Materia actualizada',
+        data: updatedSubject,
+        status: HttpStatus.OK
+      };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }

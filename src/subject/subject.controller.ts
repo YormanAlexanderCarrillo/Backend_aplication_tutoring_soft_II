@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateSubjectDto } from './dtos/create_subject.dto';
@@ -32,5 +32,12 @@ export class SubjectController {
   @Delete('/delete-subject/:id')
   async deleteSubject(@Param('id') id: string) {
     return await this.subjectService.deleteSubject(id);
+  }
+
+  @Roles(Role.ADMINISTRATOR)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Put('/update-subject/:id')
+  async updateSubject(@Param('id') id: string, @Body() subject: CreateSubjectDto) {
+    return await this.subjectService.updateSubject(id, subject);
   }
 }

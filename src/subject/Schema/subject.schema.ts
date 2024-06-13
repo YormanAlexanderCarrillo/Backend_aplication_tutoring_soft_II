@@ -6,7 +6,7 @@ export class Subject {
   name: String;
   @Prop({ required: true })
   description: string;
-  @Prop({ required: true, unique: true, immutable: true })
+  @Prop({ required: true, unique: true })
   subjectCode: string;
   @Prop({ required: false })
   supportMaterial: string[];
