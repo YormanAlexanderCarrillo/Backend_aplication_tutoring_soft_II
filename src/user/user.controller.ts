@@ -1,10 +1,12 @@
-import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/Enums/enum.role';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { CreateUserDto } from './Dtos/create_user.dto';
+import { UpdateTutor } from './Dtos/update_tutor.dto';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -27,5 +29,12 @@ export class UserController {
     @Param('id_subject') id_subject: string,
   ) {
     return this.userService.addSubjectToTutor(id_tutor, id_subject);
+  }
+
+  @Roles(Role.ADMINISTRATOR, Role.TUTOR)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Put('/update-tutor/:id')
+  async updateTutor(@Param('id') id: string, @Body() tutor: UpdateTutor) {
+    return this.userService.updateTutor(id, tutor);
   }
 }

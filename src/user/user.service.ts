@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './Dtos/create_user.dto';
 import { Role } from 'src/common/Enums/enum.role';
 import { SubjectService } from 'src/subject/subject.service';
+import { UpdateTutor } from './Dtos/update_tutor.dto';
 
 @Injectable()
 export class UserService {
@@ -90,4 +91,19 @@ export class UserService {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
+
+  async updateTutor(id: string, tutor: UpdateTutor){
+    try {
+      const updatedTutor = await this.userModel.findByIdAndUpdate(id, tutor);
+      return {
+        message: 'Tutor actualizado',
+        status: HttpStatus.OK,
+        tutor: updatedTutor,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  
 }
