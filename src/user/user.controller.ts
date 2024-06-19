@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -36,5 +36,12 @@ export class UserController {
   @Put('/update-tutor/:id')
   async updateTutor(@Param('id') id: string, @Body() tutor: UpdateTutor) {
     return this.userService.updateTutor(id, tutor);
+  }
+
+  @Roles(Role.ADMINISTRATOR)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('/delete-tutor/:id')
+  async deleteTutor(@Param('id') id: string) {
+    return this.userService.deleteTutor(id);
   }
 }
