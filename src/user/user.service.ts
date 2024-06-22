@@ -105,5 +105,25 @@ export class UserService {
     }
   }
 
+  async deleteTutor(id:string){
+    try{
+      const tutor = await this.userModel.findByIdAndDelete(id);
+      if(tutor){
+        return {
+          message: 'Tutor eliminado',
+          status: HttpStatus.OK
+        }
+      }
+      else{
+        return {
+          message: 'Tutor no encontrado',
+          status: HttpStatus.NOT_FOUND
+        }
+      }
+    }catch(error){
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
+
   
 }
