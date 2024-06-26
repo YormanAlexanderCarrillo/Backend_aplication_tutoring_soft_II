@@ -15,9 +15,10 @@ export class FileController {
 
   
   @Post('/upload-file')
-  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    
     return this.fileService.uploadFile(file);
   }
 }

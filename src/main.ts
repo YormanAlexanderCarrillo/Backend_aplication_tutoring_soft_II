@@ -2,9 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as admin from 'firebase-admin';
+import serviceAccount from './firebase/firebase_admin';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: process.env.STORAGEBUCKETFILES,
+  });
+
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api/v1');
@@ -16,6 +24,6 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, configDocs);
   SwaggerModule.setup('/docs', app, document);
-  await app.listen(8000);
+  await app.listen(8001);
 }
 bootstrap();

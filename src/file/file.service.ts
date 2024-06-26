@@ -1,36 +1,24 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { storage } from 'src/firebase/firebase_admin';
+import { storage } from 'firebase-admin';
 
 @Injectable()
 export class FileService {
   async uploadFile(file: Express.Multer.File) {
+    const bucket = storage().bucket();
+    const fileUpload = await bucket.upload(file.path, {
+      destination: `uploads/${file.originalname}`,
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
 
-    if (!file) {
-       throw new HttpException('Archivo no proporcionado', HttpStatus.BAD_REQUEST)
-    }
+    const downloadUrl = await fileUpload[0].getSignedUrl({
+      action: 'read',
+      expires: '03-09-2491',
+    });
 
-    const bucket = storage.bucket();
-    const blob = bucket.file(file.originalname);
-    const blobStream = blob.createWriteStream({
-        resumable: false,
-        metadata: {
-            contentType: file.mimetype,
-        },
-    })
-
-    return new Promise((resolve, reject) => {
-        blobStream.on('error', (err)=>{
-            reject(new Error(err.message))
-        })
-
-        blobStream.on('finish', ()=>{
-            resolve({
-                message: "Archivo almacenado",
-                filename: file.originalname
-            })
-        })
-
-        blobStream.end(file.buffer)
-    })
+    return {
+      url: downloadUrl[0],
+    };
   }
 }
