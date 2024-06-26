@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TutoringModule } from './tutoring/tutoring.module';
 import { SubjectModule } from './subject/subject.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SubjectModule } from './subject/subject.module';
     AuthModule,
     TutoringModule,
     SubjectModule,
+    FileModule,
   ],
   controllers: [],
   providers: [],
