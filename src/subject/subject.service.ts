@@ -4,6 +4,7 @@ import { Subject } from './Schema/subject.schema';
 import { Model } from 'mongoose';
 import { CreateSubjectDto } from './dtos/create_subject.dto';
 import { async } from 'rxjs';
+import { runInThisContext } from 'vm';
 
 @Injectable()
 export class SubjectService {
@@ -34,49 +35,67 @@ export class SubjectService {
     }
   }
 
-  async getAllSubjects(){
+  async getAllSubjects() {
     try {
       const subjects = await this.subjectModel.find();
       return {
         data: subjects,
-        status: HttpStatus.OK
-      }
+        status: HttpStatus.OK,
+      };
     } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async deleteSubject(id: string){
+  async deleteSubject(id: string) {
     try {
       const subject = await this.subjectModel.findByIdAndDelete(id);
       if (subject) {
         return {
           message: 'Materia eliminada',
-          status: HttpStatus.OK
-        }
-      }
-      else {
+          status: HttpStatus.OK,
+        };
+      } else {
         return {
           message: 'Materia no encontrada',
-          status: HttpStatus.NOT_FOUND
-        }
+          status: HttpStatus.NOT_FOUND,
+        };
       }
-     
     } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async updateSubject(id: string, subject: CreateSubjectDto){
+  async updateSubject(id: string, subject: CreateSubjectDto) {
     try {
-      const updatedSubject = await this.subjectModel.findByIdAndUpdate(id, subject);
+      const updatedSubject = await this.subjectModel.findByIdAndUpdate(
+        id,
+        subject,
+      );
       return {
         message: 'Materia actualizada',
         data: updatedSubject,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async addMaterialToSubject(id: string, url: string) {
+    try {
+      await this.subjectModel.findByIdAndUpdate(
+        id,
+        { $push: { supportMaterial: url } },
+        { new: true },
+      );
+
+      return {
+        message: "Material Agregado",
         status: HttpStatus.OK
       };
     } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 }
