@@ -1,24 +1,39 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { storage } from 'firebase-admin';
+import { SubjectService } from 'src/subject/subject.service';
 
 @Injectable()
 export class FileService {
-  async uploadFile(file: Express.Multer.File) {
+  constructor(private readonly subjectService: SubjectService) {}
+
+  async uploadFile(id: string, file: Express.Multer.File) {
+    if (!file || !file.buffer) {
+      throw new HttpException(
+        'File is not defined or buffer is empty',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const bucket = storage().bucket();
-    const fileUpload = await bucket.upload(file.path, {
-      destination: `uploads/${file.originalname}`,
+    const filename = `uploads/${file.originalname}`;
+    const fileUpload = bucket.file(filename);
+
+    await fileUpload.save(file.buffer, {
       metadata: {
         contentType: file.mimetype,
       },
     });
 
-    const downloadUrl = await fileUpload[0].getSignedUrl({
+    const downloadUrl = await fileUpload.getSignedUrl({
       action: 'read',
       expires: '03-09-2491',
     });
 
-    return {
-      url: downloadUrl[0],
-    };
+    const response = this.subjectService.addMaterialToSubject(
+      id,
+      downloadUrl[0],
+    );
+
+    return response;
   }
 }
