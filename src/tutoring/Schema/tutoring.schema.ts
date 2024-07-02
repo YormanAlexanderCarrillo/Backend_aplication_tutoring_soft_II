@@ -19,7 +19,7 @@ export class Tutoring {
     student: User;
     @Prop({type: mongooseSchema.Types.ObjectId, ref: 'User'})
     tutor: User;
-    @Prop([{ type: mongooseSchema.Types.ObjectId, ref: 'Subject',}])
+    @Prop({ type: mongooseSchema.Types.ObjectId, ref: 'Subject',})
     subject: Subject;
 
 
