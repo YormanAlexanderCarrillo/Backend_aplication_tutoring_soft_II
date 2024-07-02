@@ -45,7 +45,7 @@ export class TutoringService {
   async getAllTutoringByStudent(_id: string) {
     try {
       // const tutoring1 = await this.tutoringModel.find()
-      const tutorings = await this.tutoringModel.find({ student: _id });
+      const tutorings = await this.tutoringModel.find({ student: _id }).populate('tutor','name').populate('subject','name').exec();
 
       return {
         message: 'Tutorias Recuperadas',
