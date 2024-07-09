@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Param,
   Post,
   UploadedFile,
@@ -29,5 +30,12 @@ export class FileController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.fileService.uploadFile(id, file);
+  }
+
+  @Get('/get-material-by-subject/:idSubject')
+  @Roles(Role.ADMINISTRATOR, Role.STUDENT)
+  @UseGuards(AuthGuard, RolesGuard)
+  async getMaterialBySubjectId(@Param('idSubject') id: string) {
+    return this.fileService.getMaterialBySubjectId(id);
   }
 }

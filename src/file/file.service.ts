@@ -36,4 +36,9 @@ export class FileService {
 
     return response;
   }
+
+  async getMaterialBySubjectId(id: string) {
+    const response = this.subjectService.findSubjectById(id);
+    return response;
+  }
 }
