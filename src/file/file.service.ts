@@ -1,10 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { storage } from 'firebase-admin';
 import { SubjectService } from 'src/subject/subject.service';
+import { File } from './Schema/file.schema';
+import { Model } from 'mongoose';
+import { createFileDto } from './dtos/create_file.dto';
 
 @Injectable()
 export class FileService {
-  constructor(private readonly subjectService: SubjectService) {}
+  constructor(
+    @InjectModel(File.name) private readonly fileModel: Model<File>,
+    private readonly subjectService: SubjectService,
+  ) {}
 
   async uploadFile(id: string, file: Express.Multer.File) {
     if (!file || !file.buffer) {
@@ -29,10 +36,19 @@ export class FileService {
       expires: '03-09-2491',
     });
 
-    const response = this.subjectService.addMaterialToSubject(
-      id,
-      downloadUrl[0],
-    );
+    const titleDocument = file.originalname;
+    const fileSizeMB = file.buffer.length / (1024 * 1024);
+
+    const fileToDB: createFileDto = {
+      name: titleDocument,
+      size: fileSizeMB,
+      urlDownload: downloadUrl[0],
+    };
+
+    const newfile = new this.fileModel(fileToDB);
+    const dataFile = await newfile.save();
+
+    const response = this.subjectService.addMaterialToSubject(id, dataFile);
 
     return response;
   }

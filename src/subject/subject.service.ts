@@ -3,8 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Subject } from './Schema/subject.schema';
 import { Model } from 'mongoose';
 import { CreateSubjectDto } from './dtos/create_subject.dto';
-import { async } from 'rxjs';
-import { runInThisContext } from 'vm';
+import { File } from 'src/file/Schema/file.schema';
 
 @Injectable()
 export class SubjectService {
@@ -28,7 +27,7 @@ export class SubjectService {
 
   async findSubjectById(id: string) {
     try {
-      const subject = await this.subjectModel.findById(id);
+      const subject = await this.subjectModel.findById(id).populate('supportMaterial');
       return subject;
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
@@ -82,18 +81,23 @@ export class SubjectService {
     }
   }
 
-  async addMaterialToSubject(id: string, url: string) {
+  async addMaterialToSubject(idSubject: string, file: File) {
     try {
-      await this.subjectModel.findByIdAndUpdate(
-        id,
-        { $push: { supportMaterial: url } },
-        { new: true },
-      );
-
-      return {
-        message: "Material Agregado",
-        status: HttpStatus.OK
-      };
+      const subject = await this.subjectModel.findById(idSubject);
+      if (subject) {
+        await this.subjectModel.findByIdAndUpdate(idSubject, {
+          $push: { supportMaterial: file },
+        });
+        return {
+          message: 'Material Agregado',
+          status: HttpStatus.OK,
+        };
+      } else {
+        throw new HttpException(
+          'No se encontro la materia',
+          HttpStatus.NOT_FOUND,
+        );
+      }
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
