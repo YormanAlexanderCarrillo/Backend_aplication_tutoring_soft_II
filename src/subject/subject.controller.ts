@@ -20,7 +20,7 @@ export class SubjectController {
     return await this.subjectService.createSubject(subject);
   }
 
-  @Roles(Role.ADMINISTRATOR)
+  @Roles(Role.ADMINISTRATOR, Role.STUDENT)
   @UseGuards(AuthGuard, RolesGuard)
   @Get('/get-all-subjects')
   async getAllSubjects() {
