@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { TutoringModule } from './tutoring/tutoring.module';
 import { SubjectModule } from './subject/subject.module';
 import { FileModule } from './file/file.module';
+import { ForumModule } from './forum/forum.module';
+import { ThreadsModule } from './threads/threads.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { FileModule } from './file/file.module';
     TutoringModule,
     SubjectModule,
     FileModule,
+    ForumModule,
+    ThreadsModule,
   ],
   controllers: [],
   providers: [],
