@@ -13,14 +13,14 @@ import { CreateForumDto } from './dtos/create_forum.dto';
 export class ForumController {
     constructor(private readonly forumService: ForumService) {}
 
-    @Roles(Role.ADMINISTRATOR)
+    @Roles(Role.ADMINISTRATOR, Role.TUTOR)
     @UseGuards(AuthGuard, RolesGuard)
     @Post('/create-forum')
     async createForum(@Body() forum: CreateForumDto) {
         return await this.forumService.createForum(forum);
     }
 
-    @Roles(Role.ADMINISTRATOR)
+    @Roles(Role.ADMINISTRATOR, Role.TUTOR, Role.STUDENT)
     @UseGuards(AuthGuard, RolesGuard)
     @Get('/get-forums')
     async getForums() {
