@@ -14,14 +14,14 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class ThreadsController {
     constructor(private readonly threadsService: ThreadsService) {}
 
-    @Roles(Role.STUDENT, Role.ADMINISTRATOR)
+    @Roles(Role.STUDENT, Role.ADMINISTRATOR, Role.TUTOR)
     @UseGuards(AuthGuard, RolesGuard)
     @Post('/add-thread')
     async createThread(@Body() thread: CreateThreadDto) {
       return await this.threadsService.createThread(thread);
     }
 
-    @Roles(Role.STUDENT, Role.ADMINISTRATOR)
+    @Roles(Role.STUDENT, Role.ADMINISTRATOR, Role.TUTOR)
     @UseGuards(AuthGuard, RolesGuard)
     @Get('/get-comments/:forumId')
     async findCommnentsByForum(@Param('forumId') forumId: string) {
