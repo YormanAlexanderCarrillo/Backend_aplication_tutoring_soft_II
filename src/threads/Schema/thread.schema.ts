@@ -9,7 +9,7 @@ export class Thread{
     forum: Forum;
     @Prop({required: true})
     comment:string;
-    @Prop({default: Date.now()})
+    @Prop({default:()=> Date.now()})
     dateCreated:Date;
 }
 
