@@ -6,7 +6,7 @@ export class Forum {
     title:string;
     @Prop({required:true})
     description:string;
-    @Prop({default: Date.now()})
+    @Prop({default:()=> Date.now()})
     dateCreated:Date;
     @Prop({default: true})
     state: boolean
