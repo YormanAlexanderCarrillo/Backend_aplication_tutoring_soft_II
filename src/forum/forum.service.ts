@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Forum } from './Schema/forum.schema';
 import { Model } from 'mongoose';
 import { CreateForumDto } from './dtos/create_forum.dto';
+import { UpdateForumDto } from './dtos/update_forum.dto';
 
 @Injectable()
 export class ForumService {
@@ -32,6 +33,36 @@ export class ForumService {
       return {
         message: 'Foros obtenidos',
         data: forums,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async deleteForum(idForum: string) {
+    try {
+      const forum = await this.forumModel.findByIdAndDelete(idForum);
+      return {
+        message: 'Foro eliminado',
+        data: forum,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async updateForum(idForum: string, forum: UpdateForumDto) {
+    try {
+      const forumUpdated = await this.forumModel.findByIdAndUpdate(
+        idForum,
+        forum,
+        { new: true },
+      );
+      return {
+        message: 'Foro actualizado',
+        data: forumUpdated,
         status: HttpStatus.OK,
       };
     } catch (error) {

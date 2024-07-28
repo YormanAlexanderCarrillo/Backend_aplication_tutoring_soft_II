@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ForumService } from './forum.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -6,6 +6,7 @@ import { Role } from 'src/common/Enums/enum.role';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { CreateForumDto } from './dtos/create_forum.dto';
+import { UpdateForumDto } from './dtos/update_forum.dto';
 
 @ApiTags('Forum')
 @ApiBearerAuth()
@@ -25,6 +26,20 @@ export class ForumController {
     @Get('/get-forums')
     async getForums() {
         return await this.forumService.getForums();
+    }
+
+    @Roles(Role.ADMINISTRATOR, Role.TUTOR)
+    @UseGuards(AuthGuard, RolesGuard)
+    @Delete('/delete-forum/:idForum')
+    async deleteForum(@Param("idForum") idForum: string) {
+        return await this.forumService.deleteForum(idForum)
+    }
+
+    @Roles(Role.ADMINISTRATOR, Role.TUTOR)
+    @UseGuards(AuthGuard, RolesGuard)
+    @Put('/update-forum/:idForum')
+    async updateForum(@Param("idForum") idForum: string, @Body() forum: UpdateForumDto) {
+        return await this.forumService.updateForum(idForum, forum)
     }
 
 
