@@ -42,5 +42,12 @@ export class ForumController {
         return await this.forumService.updateForum(idForum, forum)
     }
 
+    @Roles(Role.ADMINISTRATOR, Role.TUTOR, Role.STUDENT)
+    @UseGuards(AuthGuard, RolesGuard)
+    @Get('/get-forums')
+    async getAllForums() {
+        return await this.forumService.getAllForums();
+    }
+
 
 }
