@@ -12,5 +12,5 @@ export class UpdateForumDto {
 
   @IsNotEmpty()
   @IsBoolean()
-  status: boolean;
+  state: boolean;
 }
