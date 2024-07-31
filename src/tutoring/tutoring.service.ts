@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { UserService } from 'src/user/user.service';
 import { SubjectService } from 'src/subject/subject.service';
 import { CreateTutoringDto } from './dtos/tutoring.dto';
+import { UpdateStatus } from './dtos/UpdateStatus.dto';
 
 @Injectable()
 export class TutoringService {
@@ -44,8 +45,11 @@ export class TutoringService {
 
   async getAllTutoringByStudent(_id: string) {
     try {
-      // const tutoring1 = await this.tutoringModel.find()
-      const tutorings = await this.tutoringModel.find({ student: _id }).populate('tutor','name').populate('subject','name').exec();
+      const tutorings = await this.tutoringModel
+        .find({ student: _id })
+        .populate('tutor', 'name')
+        .populate('subject', 'name')
+        .exec();
 
       return {
         message: 'Tutorias Recuperadas',
@@ -54,6 +58,46 @@ export class TutoringService {
       };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async getAllTutoringByTutor(_id: string) {
+    try {
+      const tutorings = await this.tutoringModel
+        .find({ tutor: _id })
+        .populate('student', 'name')
+        .populate('subject', 'name')
+        .exec();
+
+      return {
+        message: 'Tutorias Recuperadas',
+        data: tutorings,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async updateStatusTutoring(_id: string, status: boolean) {
+    try {
+      const tutoring = await this.tutoringModel.findByIdAndUpdate(
+        _id,
+        { status },
+        { new: true },
+      );
+
+      if (!tutoring) {
+        throw new HttpException('Tutoring not found', HttpStatus.NOT_FOUND);
+      }
+
+      return {
+        message: 'Tutoria Actualizada',
+        data: tutoring,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }
