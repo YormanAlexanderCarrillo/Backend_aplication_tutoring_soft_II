@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -15,6 +16,7 @@ import { Role } from 'src/common/Enums/enum.role';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { UpdateStatus } from './dtos/UpdateStatus.dto';
+import { UpdateTutoringDto } from './dtos/UpdateTutoring.dto';
 
 @ApiTags('Tutorings')
 @ApiBearerAuth()
@@ -62,4 +64,19 @@ export class TutoringController {
   ) {
     return await this.tutoringService.updateStatusTutoring(idTutoring, status);
   }
+
+  @Roles(Role.STUDENT)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('delete-tutoring/:idTutoring')
+  async deleteTutoring(@Param('idTutoring') idTutoring: string) {
+    return await this.tutoringService.deleteTutoring(idTutoring)
+  }
+
+  @Roles(Role.STUDENT)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Put('update-tutoring/:idtutoring')
+  async updateTutoring(@Param('idtutoring') idtutoring: string, @Body() updateData: UpdateTutoringDto) {
+    return await this.tutoringService.updateTutoring(idtutoring, updateData)
+  }
+
 }

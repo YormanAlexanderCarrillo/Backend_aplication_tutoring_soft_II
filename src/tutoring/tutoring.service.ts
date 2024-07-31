@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { SubjectService } from 'src/subject/subject.service';
 import { CreateTutoringDto } from './dtos/tutoring.dto';
 import { UpdateStatus } from './dtos/UpdateStatus.dto';
+import { UpdateTutoringDto } from './dtos/UpdateTutoring.dto';
 
 @Injectable()
 export class TutoringService {
@@ -89,6 +90,45 @@ export class TutoringService {
 
       if (!tutoring) {
         throw new HttpException('Tutoring not found', HttpStatus.NOT_FOUND);
+      }
+
+      return {
+        message: 'Tutoria Actualizada',
+        data: tutoring,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async deleteTutoring(id: string) {
+    try {
+      const tutoring = await this.tutoringModel.findByIdAndDelete(id);
+      if (!tutoring) {
+        throw new HttpException('Tutoria no encontrada', HttpStatus.NOT_FOUND);
+      }
+      return {
+        message: 'Tutoria Eliminada',
+        data: tutoring,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+
+  async updateTutoring(idtutoring:string, updateData: UpdateTutoringDto) {
+    try {
+      const tutoring = await this.tutoringModel.findByIdAndUpdate(
+        idtutoring,
+        updateData,
+        { new: true },
+      );
+
+      if (!tutoring) {
+        throw new HttpException('Tutoria no encontrada', HttpStatus.NOT_FOUND);
       }
 
       return {
