@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { TutoringService } from './tutoring.service';
 import { CreateTutoringDto } from './dtos/tutoring.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -6,6 +14,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/Enums/enum.role';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { UpdateStatus } from './dtos/UpdateStatus.dto';
 
 @ApiTags('Tutorings')
 @ApiBearerAuth()
@@ -35,5 +44,22 @@ export class TutoringController {
   @Get('/get-all-tutoring-by-student/:idStudent')
   async getAllTutoring(@Param('idStudent') idStudent: string) {
     return await this.tutoringService.getAllTutoringByStudent(idStudent);
+  }
+
+  @Roles(Role.TUTOR)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('/get-all-tutoring-by-tutor/:idTutor')
+  async getAllTutorigByTutor(@Param('idTutor') idTutor: string) {
+    return await this.tutoringService.getAllTutoringByTutor(idTutor);
+  }
+
+  @Roles(Role.TUTOR)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Put('update-status-tutoring/:idTutoring/:status')
+  async updateStatusTutoring(
+    @Param('idTutoring') idTutoring: string,
+    @Param('status') status: boolean,
+  ) {
+    return await this.tutoringService.updateStatusTutoring(idTutoring, status);
   }
 }
