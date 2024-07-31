@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -21,10 +22,11 @@ import { Role } from 'src/common/Enums/enum.role';
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post('/upload-file/:idSubject')
+  
   @Roles(Role.ADMINISTRATOR)
   @UseGuards(AuthGuard, RolesGuard)
   @UseInterceptors(FileInterceptor('file'))
+  @Post('/upload-file/:idSubject')
   async uploadFile(
     @Param('idSubject') id: string,
     @UploadedFile() file: Express.Multer.File,
@@ -32,10 +34,20 @@ export class FileController {
     return this.fileService.uploadFile(id, file);
   }
 
-  @Get('/get-material-by-subject/:idSubject')
+  
   @Roles(Role.ADMINISTRATOR, Role.STUDENT)
   @UseGuards(AuthGuard, RolesGuard)
+  @Get('/get-material-by-subject/:idSubject')
   async getMaterialBySubjectId(@Param('idSubject') id: string) {
     return this.fileService.getMaterialBySubjectId(id);
   }
+
+  @Roles(Role.ADMINISTRATOR)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('/delete-file/:fileId')
+  async deleteFile(@Param('fileId') fileId: string){
+    return this.fileService.deleteFile(fileId);
+  }
+
+  
 }

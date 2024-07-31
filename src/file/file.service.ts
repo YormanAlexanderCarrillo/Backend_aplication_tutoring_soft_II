@@ -57,4 +57,35 @@ export class FileService {
     const response = this.subjectService.findSubjectById(id);
     return response;
   }
+
+  async deleteFile(fileId: string) {
+    try {
+      const file = await this.fileModel.findById(fileId);
+      if (!file) {
+        throw new HttpException('Archivo no encontrado', HttpStatus.NOT_FOUND);
+      }
+
+      const bucket = storage().bucket();
+      const filename = `uploads/${file.name}`;
+      const fileUpload = bucket.file(filename);
+
+      try {
+        await fileUpload.delete();
+      } catch (error) {
+        throw new HttpException(
+          'Fallo eliminar archivo firebase',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      await this.fileModel.findByIdAndDelete(fileId);
+
+      return {
+        message: 'Archivo eliminado',
+        status: HttpStatus.OK,
+      };
+
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
 }

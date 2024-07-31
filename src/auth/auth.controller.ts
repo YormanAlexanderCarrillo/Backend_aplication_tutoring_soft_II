@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './Dtos/Register_User.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -29,6 +29,11 @@ export class AuthController {
   @Post('register-tutor')
   async registerTutor(@Body() dataTutor: RegisterUserDto){
     return await this.authService.registerTutor(dataTutor)
+  }
+
+  @Put('send-email-reset-password/:email')
+  async sendEmailResetPassword(@Param('email') email: string) {
+    return await this.authService.sendEmailResetPassword(email);
   }
 
 }
