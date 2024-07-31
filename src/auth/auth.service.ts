@@ -4,12 +4,12 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { AppFirebase } from 'src/firebase/firebase_config';
 import { UserService } from 'src/user/user.service';
 import { RegisterUserDto } from './Dtos/Register_User.dto';
 import { LoginUserDto } from 'src/user/Dtos/Login_user.dto';
-import { log } from 'console';
 import { Role } from 'src/common/Enums/enum.role';
 const auth = getAuth(AppFirebase);
 
@@ -117,6 +117,21 @@ export class AuthService {
       };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async sendEmailResetPassword(email: string) {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return {
+        message: 'Correo de restablecimiento de contraseña enviado',
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(
+        'Error al enviar el correo de restablecimiento',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }
