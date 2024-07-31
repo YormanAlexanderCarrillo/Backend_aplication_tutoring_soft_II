@@ -11,11 +11,13 @@ export class ForumService {
     @InjectModel(Forum.name) private readonly forumModel: Model<Forum>,
   ) {}
 
-  async createForum(forum: CreateForumDto) {
+  async createForum(idTutor: string, forum: CreateForumDto) {
     try {
-      const newForum = new this.forumModel(forum);
-      console.log(newForum);
-
+      const forumWithTutorId = { ...forum, tutor: idTutor };
+  
+      const newForum = new this.forumModel(forumWithTutorId);
+      //console.log(newForum);
+  
       const dataForum = await newForum.save();
       return {
         message: 'Foro creado',
@@ -23,13 +25,13 @@ export class ForumService {
         status: HttpStatus.OK,
       };
     } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async getForums() {
+  async getForums(idTutor: string) {
     try {
-      const forums = await this.forumModel.find();
+      const forums = await this.forumModel.find({ tutor: idTutor });
       return {
         message: 'Foros obtenidos',
         data: forums,
