@@ -16,16 +16,16 @@ export class ForumController {
 
     @Roles(Role.ADMINISTRATOR, Role.TUTOR)
     @UseGuards(AuthGuard, RolesGuard)
-    @Post('/create-forum')
-    async createForum(@Body() forum: CreateForumDto) {
-        return await this.forumService.createForum(forum);
+    @Post('/create-forum/:idTutor')
+    async createForum(@Param("idTutor") idTutor: string ,@Body() forum: CreateForumDto) {
+        return await this.forumService.createForum(idTutor, forum);
     }
 
     @Roles(Role.ADMINISTRATOR, Role.TUTOR, Role.STUDENT)
     @UseGuards(AuthGuard, RolesGuard)
-    @Get('/get-forums')
-    async getForums() {
-        return await this.forumService.getForums();
+    @Get('/get-forums/:idTutor')
+    async getForums(@Param("idTutor") idTutor: string) {
+        return await this.forumService.getForums(idTutor);
     }
 
     @Roles(Role.ADMINISTRATOR, Role.TUTOR)
