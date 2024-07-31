@@ -71,4 +71,17 @@ export class ForumService {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
+
+  async getAllForums() {
+    try {
+      const forums = await this.forumModel.find();
+      return {
+        message: 'Foros obtenidos',
+        data: forums,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
